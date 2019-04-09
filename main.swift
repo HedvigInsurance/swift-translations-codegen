@@ -33,6 +33,8 @@ if CommandLine.arguments.index(of: "--help") != nil {
         \(colorWhite)--destination: Full path of desired destination for generated Swift file (including ".swift", for example "translations/translations.swift") \(colorRed)REQUIRED
         \(colorWhite)--swiftformat-path: The path to the Swiftformat CLI \(colorYellow)OPTIONAL
         \(colorWhite)--curl-path: The path to Curl \(colorYellow)OPTIONAL
+        \(colorWhite)--ignore-versions: Ignores checking '.swiftTranslationsCodegen' version \(colorYellow)OPTIONAL
+        \(colorWhite)--default-language: Set's the default language in Localization.Language \(colorYellow)OPTIONAL
         """)
     exit(1)
 }
@@ -65,6 +67,9 @@ if !FileManager.default.fileExists(atPath: curlCLIPath) {
 
 let projects = CommandLine.arguments[CommandLine.arguments.index(of: "--projects")! + 1]
 let destination = CommandLine.arguments[CommandLine.arguments.index(of: "--destination")! + 1]
+
+let defaultLanguageArgumentIndex = CommandLine.arguments.index(of: "--default-language")
+let defaultLanguage = defaultLanguageArgumentIndex == nil ? nil : CommandLine.arguments[defaultLanguageArgumentIndex! + 1]
 
 let curlTask = Process()
 
@@ -278,8 +283,42 @@ import Foundation
 
 // swiftlint:disable identifier_name type_body_length type_name line_length nesting file_length
 
+extension String {
+    static var localizationKey: UInt8 = 0
+
+    var localizationKey: Localization.Key? {
+        get {
+            guard let value = objc_getAssociatedObject(
+                self,
+                &String.localizationKey
+            ) as? Localization.Key? else {
+                return nil
+            }
+
+            return value
+        }
+        set(newValue) {
+            objc_setAssociatedObject(
+                self,
+                &String.localizationKey,
+                newValue,
+                objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC
+            )
+        }
+    }
+
+    init(key: Localization.Key, currentLanguage: Localization.Language = Localization.Language.currentLanguage) {
+        switch currentLanguage {
+            \(graphCMSRoot.data.languages.map { "case .\($0.code): self = Localization.Translations.\($0.code).for(key: key)" }.joined(separator: "\n"))
+        }
+
+        localizationKey = key
+    }
+}
+
 public struct Localization {
 enum Language {
+    static var currentLanguage: Language = .\(defaultLanguage != nil ? defaultLanguage! : graphCMSRoot.data.languages.first!.code)
 \(languageEnumCases())
 }
 
