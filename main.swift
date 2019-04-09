@@ -82,7 +82,7 @@ curlTask.arguments = [
     "Connection: keep-alive",
     "--data-binary",
     """
-    {"query":"query AppTranslationsMeta { languages { code translations(where: { project_in: \(projects) }) { text key { value } language { code } } } keys(where: { translations_every: { project_in: \(projects) } }) { value description } }","variables":null,"operationName":"AppTranslationsMeta"}
+    {"query":"query AppTranslationsMeta { languages { code translations(where: { project_in: \(projects) }) { text key { value translations { text } } language { code } } } keys(where: { translations_every: { project_in: \(projects) } }) { value description translations { text } } }","variables":null,"operationName":"AppTranslationsMeta"}
     """,
     "--compressed",
 ]
@@ -109,6 +109,7 @@ struct GraphCMSLanguage: Decodable {
 struct GraphCMSKey: Decodable {
     let value: String
     let description: String?
+    let translations: [GraphCMSTranslation]
 }
 
 struct GraphCMSData: Decodable {
@@ -173,7 +174,13 @@ func languageEnumCases() -> String {
 }
 
 func keysEnumCases() -> String {
-    let keys = graphCMSRoot.data.keys.map { key -> String in
+    let keys = graphCMSRoot.data.keys.filter { key in
+        if key.translations.count == 0 {
+            return false
+        }
+        
+        return true
+    }.map { key -> String in
         print("\(colorGreen)Generating: \(key.value)\n")
         print("\(colorWhite)\(key.description ?? "")\n\n")
         
