@@ -2,13 +2,27 @@
 
 import Foundation
 
-let placeholderRegex = try NSRegularExpression(pattern: "(\\{[a-zA-Z0-9]+\\})")
-let placeholderKeyRegex = try NSRegularExpression(pattern: "([a-zA-Z0-9]+)")
-
 let colorWhite = "\u{001B}[0;0m"
 let colorRed = "\u{001B}[0;31m"
 let colorYellow = "\u{001B}[0;33m"
 let colorGreen = "\u{001B}[0;32m"
+
+let currrentVersion = "1.0.0"
+
+let cwd = FileManager.default.currentDirectoryPath
+let swiftTranslationsCodegenVersionCheckPath = "\(cwd)/.swiftTranslationsCodegen"
+
+if FileManager.default.fileExists(atPath: swiftTranslationsCodegenVersionCheckPath) {
+    let requiredVersion = try String(contentsOf: URL(fileURLWithPath: swiftTranslationsCodegenVersionCheckPath), encoding: .utf8).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+    
+    if requiredVersion != currrentVersion && CommandLine.arguments.index(of: "--ignore-versions") == nil {
+        print("\(colorRed)Project requires version '\(requiredVersion)' but you are running '\(currrentVersion)' adjust '.swiftTranslationsCodegen' or pass '--ignore-versions'")
+        exit(1)
+    }
+}
+
+let placeholderRegex = try NSRegularExpression(pattern: "(\\{[a-zA-Z0-9]+\\})")
+let placeholderKeyRegex = try NSRegularExpression(pattern: "([a-zA-Z0-9]+)")
 
 if CommandLine.arguments.index(of: "--help") != nil {
     print("""
