@@ -261,7 +261,7 @@ func languageStructs() -> String {
                 return indent("case .\(translation.key.value):\n\(body)\n", 12)
             }.joined(separator: "").dropLast(1)
         
-        let defaultStatement = indent("default: return String(key)", 12)
+        let defaultStatement = indent("default: return String(describing: key)", 12)
         
         return "\(String(switchCases))\n\(defaultStatement)"
     }
