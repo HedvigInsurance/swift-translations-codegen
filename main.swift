@@ -307,8 +307,8 @@ extension String {
         }
     }
 
-    init(key: Localization.Key, currentLocale: Localization.Locale = Localization.Locale.currentLocale) {
-        switch currentLocale {
+    init(key: Localization.Key, locale: Localization.Locale = Localization.Locale.currentLocale) {
+        switch locale {
             \(graphCMSRoot.data.languages.map { "case .\($0.code): self = Localization.Translations.\($0.code).for(key: key)" }.joined(separator: "\n"))
         }
 
