@@ -103,7 +103,7 @@ curlTask.waitUntilExit()
 
 struct GraphCMSTranslation: Decodable {
     let text: String
-    let key: GraphCMSKey
+    let key: GraphCMSKey?
 }
 
 struct GraphCMSLanguage: Decodable {
@@ -192,7 +192,7 @@ func keysEnumCases() -> String {
         let description = key.description != nil ? "\(indent("/// \(key.description ?? "")", 6))\n" : ""
         
         let replacementArguments = graphCMSRoot.data.languages.map { language -> [GraphCMSTranslation] in
-            return language.translations.filter { $0.key.value == key.value }
+            return language.translations.filter { $0.key?.value != nil }.filter { $0.key!.value == key.value }
             }.flatMap { $0.map { findReplacements($0.text) } }.flatMap { $0 }
         
         if replacementArguments.count != 0 {
@@ -218,11 +218,11 @@ func languageStructs() -> String {
     }
     
     func getSwitchCases(_ language: GraphCMSLanguage) -> String {
-        let switchCases = language.translations.filter { translation in
-            let key = graphCMSRoot.data.keys.first { key in key.value == translation.key.value }
+        let switchCases = language.translations.filter { $0.key?.value != nil }.filter { translation in
+            let key = graphCMSRoot.data.keys.first { key in key.value == translation.key!.value }
             
             if key == nil {
-                print("\(colorYellow)WARNING \(colorWhite)hanging translation that is referencing key: \(colorYellow)\(translation.key.value)\(colorWhite), it had the value: \(colorYellow)\"\(translation.text)\"\(colorWhite)\n")
+                print("\(colorYellow)WARNING \(colorWhite)hanging translation that is referencing key: \(colorYellow)\(translation.key!.value)\(colorWhite), it had the value: \(colorYellow)\"\(translation.text)\"\(colorWhite)\n")
                 return false
             }
             
@@ -255,10 +255,10 @@ func languageStructs() -> String {
                 
                 if replacements.count != 0 {
                     let arguments = replacements.map { "\($0)" }.joined(separator: ", ")
-                    return indent("case let .\(translation.key.value)(\(arguments)):\n\(body)\n", 12)
+                    return indent("case let .\(translation.key!.value)(\(arguments)):\n\(body)\n", 12)
                 }
                 
-                return indent("case .\(translation.key.value):\n\(body)\n", 12)
+                return indent("case .\(translation.key!.value):\n\(body)\n", 12)
             }.joined(separator: "").dropLast(1)
         
         let defaultStatement = indent("default: return String(describing: key)", 12)
