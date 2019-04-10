@@ -175,7 +175,7 @@ func languageEnumCases() -> String {
         return "\(enumCase)\n"
     }
     
-    return cases.compactMap { $0 }.joined()
+    return cases.joined(separator: "")
 }
 
 func keysEnumCases() -> String {
@@ -307,8 +307,8 @@ extension String {
         }
     }
 
-    init(key: Localization.Key, currentLanguage: Localization.Language = Localization.Language.currentLanguage) {
-        switch currentLanguage {
+    init(key: Localization.Key, currentLanguage: Localization.Locale = Localization.Locale.currentLocale) {
+        switch currentLocale {
             \(graphCMSRoot.data.languages.map { "case .\($0.code): self = Localization.Translations.\($0.code).for(key: key)" }.joined(separator: "\n"))
         }
 
@@ -317,8 +317,8 @@ extension String {
 }
 
 public struct Localization {
-enum Language {
-    static var currentLanguage: Language = .\(defaultLanguage != nil ? defaultLanguage! : graphCMSRoot.data.languages.first!.code)
+enum Locale: String {
+    static var currentLocale: Locale = .\(defaultLanguage != nil ? defaultLanguage! : graphCMSRoot.data.languages.first!.code)
 \(languageEnumCases())
 }
 
