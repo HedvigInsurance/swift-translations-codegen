@@ -35,6 +35,7 @@ if CommandLine.arguments.index(of: "--help") != nil {
         \(colorWhite)--curl-path: The path to Curl \(colorYellow)OPTIONAL
         \(colorWhite)--ignore-versions: Ignores checking '.swiftTranslationsCodegen' version \(colorYellow)OPTIONAL
         \(colorWhite)--default-language: Set's the default language in Localization.Language \(colorYellow)OPTIONAL
+        \(colorWhite)--exclude-objc-apis: Excludes features that depends on the Obj-c runtime \(colorYellow)OPTIONAL
         """)
     exit(1)
 }
@@ -48,6 +49,8 @@ if CommandLine.arguments.index(of: "--destination") == nil {
     print("\(colorRed)You need to pass in argument '--destination'")
     exit(1)
 }
+
+let excludeObjcAPIs = CommandLine.arguments.index(of: "--exclude-objc-apis") != nil
 
 let swiftFormatCLIArgumentIndex = CommandLine.arguments.index(of: "--swiftformat-path")
 let swiftFormatCLIPath = swiftFormatCLIArgumentIndex != nil ? CommandLine.arguments[swiftFormatCLIArgumentIndex! + 1] : "/usr/local/bin/swiftformat"
@@ -276,14 +279,12 @@ func languageStructs() -> String {
     return String(structs.dropLast(1))
 }
 
-let output = """
-// Generated automagically, don't edit yourself
-
-import Foundation
-
-// swiftlint:disable identifier_name type_body_length type_name line_length nesting file_length
-
-extension String {
+func getLocalizationKeyReflection() -> String {
+    if excludeObjcAPIs {
+        return ""
+    }
+    
+    return """
     static var localizationKey: UInt8 = 0
 
     var localizationKey: Localization.Key? {
@@ -306,13 +307,25 @@ extension String {
             )
         }
     }
+    """
+}
+
+let output = """
+// Generated automagically, don't edit yourself
+
+import Foundation
+
+// swiftlint:disable identifier_name type_body_length type_name line_length nesting file_length
+
+extension String {
+    \(getLocalizationKeyReflection())
 
     init(key: Localization.Key, locale: Localization.Locale = Localization.Locale.currentLocale) {
         switch locale {
             \(graphCMSRoot.data.languages.map { "case .\($0.code): self = Localization.Translations.\($0.code).for(key: key)" }.joined(separator: "\n"))
         }
 
-        localizationKey = key
+        \(excludeObjcAPIs ? "" : "localizationKey = key")
     }
 }
 
