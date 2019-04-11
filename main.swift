@@ -361,4 +361,5 @@ swiftFormatTask.launch()
 swiftFormatTask.waitUntilExit()
 
 print("\(colorGreen)File generation completed!")
+print("\(colorWhite)")
 
