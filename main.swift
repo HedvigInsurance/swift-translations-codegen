@@ -90,7 +90,7 @@ curlTask.arguments = [
     "Connection: keep-alive",
     "--data-binary",
     """
-    {"query":"query AppTranslationsMeta { languages { code translations(where: { project_in: \(projects) }) { text key { value translations { text } } language { code } } } keys(where: { translations_every: { project_in: \(projects) } }) { value description translations { text } } }","variables":null,"operationName":"AppTranslationsMeta"}
+    {"query":"query AppTranslationsMeta { languages { code translations(where: { project_in: \(projects) }) { text key { value translations { text } } language { code } } } keys(where: { translations_some: { project_in: \(projects) } }) { value description translations { text } } }","variables":null,"operationName":"AppTranslationsMeta"}
     """,
     "--compressed",
 ]
