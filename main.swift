@@ -21,8 +21,8 @@ if FileManager.default.fileExists(atPath: swiftTranslationsCodegenVersionCheckPa
     }
 }
 
-let placeholderRegex = try NSRegularExpression(pattern: "(\\{[a-zA-Z0-9]+\\})")
-let placeholderKeyRegex = try NSRegularExpression(pattern: "([a-zA-Z0-9]+)")
+let placeholderRegex = try NSRegularExpression(pattern: "(\\{[a-zA-Z0-9_]+\\})")
+let placeholderKeyRegex = try NSRegularExpression(pattern: "([a-zA-Z0-9_]+)")
 
 if CommandLine.arguments.index(of: "--help") != nil {
     print("""
