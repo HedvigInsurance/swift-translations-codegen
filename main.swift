@@ -154,7 +154,7 @@ func removeCurlyBraces(_ text: String, replaceOpeningWith: String = "", replaceC
 extension String {
     public func camelCased(with separator: Character) -> String {
         if !self.contains(separator) {
-            return self.prefix(self.count).allSatisfy { char in char.isUppercase } ? self.lowercased() : self
+            return self.prefix(self.count).allSatisfy { char in ("A"..."Z").contains(char) } ? self.lowercased() : self
         }
 
         return self.lowercased()
