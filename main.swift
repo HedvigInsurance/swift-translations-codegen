@@ -215,7 +215,7 @@ func keysEnumCases() -> String {
         
         if replacementArguments.count != 0 {
             let argumentNames = cleanReplacements(replacementArguments)
-            let argumentNamesSyntax = Array(Set(argumentNames)).sorted { $0 < $1 }.map { "\($0): String" }.joined(separator: ", ")
+            let argumentNamesSyntax = Array(Set(argumentNames)).sorted { $0 < $1 }.map { "\($0): LocalizationStringConvertible" }.joined(separator: ", ")
             
             return "\(description)\(indent("case \(key.value)(\(argumentNamesSyntax))", 6))"
         }
@@ -355,6 +355,34 @@ let output = """
 import Foundation
 
 // swiftlint:disable identifier_name type_body_length type_name line_length nesting file_length
+
+protocol LocalizationStringConvertible {
+    var localizationDescription: String { get }
+}
+
+extension String: LocalizationStringConvertible {
+    var localizationDescription: String {
+        return self
+    }
+}
+
+extension Int: LocalizationStringConvertible {
+    var localizationDescription: String {
+        return String(self)
+    }
+}
+
+extension Double: LocalizationStringConvertible {
+    var localizationDescription: String {
+        return String(self)
+    }
+}
+
+extension Float: LocalizationStringConvertible {
+    var localizationDescription: String {
+        return String(self)
+    }
+}
 
 extension String {
     \(getLocalizationKeyReflection())
