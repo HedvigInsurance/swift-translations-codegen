@@ -420,7 +420,7 @@ if file == nil {
 }
 
 let swiftFormatTask = Process()
-swiftFormatTask.executableURL = URL(fileURLWithPath: "/usr/local/bin/swiftformat")
+swiftFormatTask.executableURL = URL(fileURLWithPath: swiftFormatCLIPath)
 swiftFormatTask.arguments = [destination, "--quiet"]
 
 swiftFormatTask.launch()
