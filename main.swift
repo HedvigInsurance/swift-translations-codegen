@@ -303,7 +303,7 @@ func languageStructs() -> String {
             }
         
         let switchCasesString = switchCases.joined(separator: "").dropLast(1)
-        let defaultStatement = language.translations.count < graphCMSRoot.data.keys.count ? indent("default: return String(describing: key)", 12) : ""
+        let defaultStatement = indent("default: return String(describing: key)", 12)
         
         return "\(String(switchCasesString))\n\(defaultStatement)"
     }
