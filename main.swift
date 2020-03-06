@@ -7,7 +7,7 @@ let colorRed = "\u{001B}[0;31m"
 let colorYellow = "\u{001B}[0;33m"
 let colorGreen = "\u{001B}[0;32m"
 
-let currrentVersion = "1.0.0"
+let currrentVersion = "2.0.0"
 
 let cwd = FileManager.default.currentDirectoryPath
 let swiftTranslationsCodegenVersionCheckPath = "\(cwd)/.swiftTranslationsCodegen"
