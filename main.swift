@@ -356,35 +356,35 @@ import Foundation
 
 // swiftlint:disable identifier_name type_body_length type_name line_length nesting file_length
 
-protocol LocalizationStringConvertible {
+public protocol LocalizationStringConvertible {
     var localizationDescription: String { get }
 }
 
 extension String: LocalizationStringConvertible {
-    var localizationDescription: String {
+    public var localizationDescription: String {
         return self
     }
 }
 
 extension Int: LocalizationStringConvertible {
-    var localizationDescription: String {
+    public var localizationDescription: String {
         return String(self)
     }
 }
 
 extension Double: LocalizationStringConvertible {
-    var localizationDescription: String {
+    public var localizationDescription: String {
         return String(self)
     }
 }
 
 extension Float: LocalizationStringConvertible {
-    var localizationDescription: String {
+    public var localizationDescription: String {
         return String(self)
     }
 }
 
-extension String {
+public extension String {
     \(getLocalizationKeyReflection())
 
     init(key: Localization.Key, locale: Localization.Locale = Localization.Locale.currentLocale) {
@@ -398,11 +398,11 @@ extension String {
 
 public struct Localization {
 enum Locale: String, CaseIterable {
-    static var currentLocale: Locale = .\(defaultLanguage != nil ? defaultLanguage! : graphCMSRoot.data.languages.first!.code)
+    public static var currentLocale: Locale = .\(defaultLanguage != nil ? defaultLanguage! : graphCMSRoot.data.languages.first!.code)
 \(languageEnumCases())
 }
 
-enum Key {
+public enum Key {
 \(keysEnumCases())
 }
 
