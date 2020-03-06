@@ -326,7 +326,7 @@ func getLocalizationKeyReflection() -> String {
     return """
     static var localizationKey: UInt8 = 0
 
-    var localizationKey: Localization.Key? {
+    public var localizationKey: Localization.Key? {
         get {
             guard let value = objc_getAssociatedObject(
                 self,
