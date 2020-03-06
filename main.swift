@@ -397,7 +397,7 @@ public extension String {
 }
 
 public struct Localization {
-enum Locale: String, CaseIterable {
+public enum Locale: String, CaseIterable {
     public static var currentLocale: Locale = .\(defaultLanguage != nil ? defaultLanguage! : graphCMSRoot.data.languages.first!.code)
 \(languageEnumCases())
 }
